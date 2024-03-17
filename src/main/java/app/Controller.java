@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
+import util.DBUtil;
 
 import java.io.File;
 import java.net.URL;
@@ -34,10 +35,13 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // 程序启动时，创建文件信息表 file_meta
+        DBUtil.initTable();
         searchField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 // TODO
+
             }
         });
     }
@@ -48,5 +52,11 @@ public class Controller implements Initializable {
         DirectoryChooser directoryChooser=new DirectoryChooser();
         Window window = rootPane.getScene().getWindow();
         File file = directoryChooser.showDialog(window);
+        String rootPath = file.getPath();
+        // 把根路径在页面上显示出来
+        srcDirectory.setText(rootPath);
+        // 根据根路径获取文件信息
+        // TODO List<FileMeta> = 遍历rootPath，将文件保存到List中
+        // 将文件信息保存到数据库
     }
 }
