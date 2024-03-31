@@ -10,5 +10,5 @@ public class FileMeta {
     private String path;
     private long size;
     private Date lastModifiedTime;
-    private boolean isDirectory;
+    private boolean isDirectory; // TODO兼容app.fxml中的属性
 }

@@ -8,17 +8,16 @@ import org.sqlite.SQLiteDataSource;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.*;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DBUtil {
-    private static volatile SQLiteDataSource DATASOURCE = null;  //单例
+    private static volatile SQLiteDataSource DATASOURCE = null;
     private static volatile Connection CONNECTION = null;
     private static String DATE_STRING_FORMAT = "yy:mm:dd hh:mm:ss";
 
@@ -67,9 +66,6 @@ public class DBUtil {
             if (statement != null) {
                 statement.close();
             }
-            if (CONNECTION != null) {
-                CONNECTION.close();
-            }
         } catch (SQLException e) {
             logger.error(e);
             throw new RuntimeException(e);
@@ -90,7 +86,7 @@ public class DBUtil {
 
     public static void initTable() {
         String sqls = readSql();
-        String[] sqlArray = sqls.split(";");
+        String[] sqlArray = sqls.split(";\r\n");
         Statement statement = null;
         for (int i = 0; i < sqlArray.length; i++) {
             String sql = sqlArray[i];

@@ -1,20 +1,24 @@
 package app;
 
+import app.bean.FileMeta;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 import task.FileScan;
+import task.impl.FileSave2DB;
 import util.DBUtil;
 
 import java.io.File;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -25,8 +29,8 @@ public class Controller implements Initializable {
     @FXML
     private TextField searchField;
 
-//    @FXML
-//    private TableView<> fileTable;
+    @FXML
+    private TableView<FileMeta> fileTable;
 
     @FXML
     private Label srcDirectory;
@@ -56,7 +60,13 @@ public class Controller implements Initializable {
         srcDirectory.setText(rootPath);
         // 根据根路径获取文件信息
         FileScan fileScan = new FileScan();
-        fileScan.scan(rootFile);
+        FileSave2DB fileSave2DB = new FileSave2DB();
+        fileScan.scan(rootFile, fileSave2DB);
+        freshTable(rootFile, fileSave2DB);
+    }
 
+    private void freshTable(File rootPath, FileSave2DB fileSave2DB) {
+        HashSet<FileMeta> fileMetas = fileSave2DB.queryFromDB();
+        fileTable.getItems().addAll(fileMetas);
     }
 }
